@@ -2,15 +2,16 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
+# GET Method
 @app.get("/")
 def home():
-    """
-    GET /
-    Home route
-    Returns a simple JSON message
-    """
     return {"Data": "Testing"}
 
+
+#another endpoint/route
+@app.get("/about")
+def about():
+    return {"Data": "About"}
 
 # HTTP Methods
 #   GET - get something for you and return it
