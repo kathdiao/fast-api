@@ -1,6 +1,15 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Path
+from typing import Optional
+from pydantic import BaseModel
 
 app = FastAPI()
+
+class Item(BaseModel):
+    name: str
+    price: float
+    brand: Optional[str] = None
+
+inventory = {}
 
 # GET Method
 @app.get("/")
@@ -13,24 +22,37 @@ def home():
 def about():
     return {"Data": "About"}
 
-# HTTP Methods
-#   GET - get something for you and return it
-#   POST - you're going to send information to the endpoint or Adding new user to DB
-#   PUT - Update something in your database
-#   DELETE - Get rid of something
 
-# More:
-# Endpoint = route that users/devs can access
-# Example: facebook.com/home (home is the endpoint)
+#   PATH PARAMETER AND QUERY PARAMETER
 
-# COMMON HTTP STATUS CODES
-# 200 - OK (success)
-# 201 - Created (resource successfully created)
-# 204 - No Content (success but no response body)
-# 400 - Bad Request (client-side error)
-# 401 - Unauthorized (authentication required or failed)
-# 403 - Forbidden (authenticated but not allowed)
-# 404 - Not Found (resource does not exist)
-# 409 - Conflict (duplicate resource or conflict)
-# 422 - Unprocessable Entity (validation error, missing fields)
-# 500 - Internal Server Error (server-side error)
+
+#   PATH PARAM
+@app.get("/get-item/{item_id}")
+def get_item(item_id: int = Path(..., description="The ID of the Item you want to get.")):
+    return inventory[item_id]
+
+# Example URL: facebook.com/home?redirect=/kath&msg=fail
+# - endpoint = /home
+# - redirect = query parameter key, value = "/kath"
+# - msg      = query parameter key, value = "fail"
+
+
+#   QUERY PARAM
+@app.get("/get-by-name")
+def get_item(name: str = None):
+    for item_id in inventory:
+        if inventory[item_id]["name"] == name:
+            return inventory[item_id]
+    return {"Data": "Not found"}
+
+#   = None - optional(hindi required)
+
+
+#   REQUEST BODY AND POST METHOD
+@app.post("/create-item/{item_id}")
+def create_item(item_id: int, item: Item):
+    if item_id in inventory:
+        return {"Error": "Item already exists"}
+
+    inventory[item_id] = item.model_dump()
+    return inventory[item_id]
