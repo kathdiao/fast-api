@@ -46,6 +46,18 @@ uvicorn working:app --reload
 - API endpoint: `http://127.0.0.1:8000/`
 - Swagger UI: `http://127.0.0.1:8000/docs`
 
+
+## Basic FastAPI Demo Completed
+- This project has successfully implemented basic FastAPI functionality including:
+- Path parameters 
+- Query parameters 
+- CRUD operations (GET, POST, PUT, DELETE)
+- Status codes and error handling 
+- Swagger UI testing
+
+## A screenshot of the Swagger UI showing all routes and request/response examples is included below:
+![Swagger UI Screenshot](images/swagger_ss.png)
+
 ## Notes
 - This is a **personal learning and practice project** for FastAPI, testing, and backend development.
 - All routes are simple and self-contained.
