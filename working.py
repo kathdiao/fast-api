@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Path
+from fastapi import FastAPI, Path, Query
 from typing import Optional
 from pydantic import BaseModel
 
@@ -44,7 +44,7 @@ def get_item(item_id: int = Path(..., description="The ID of the Item you want t
 
 #   QUERY PARAM
 @app.get("/get-by-name")
-def get_item(name: str = None):
+def get_by_name(name: str = None):
     for item_id in inventory:
         if inventory[item_id]["name"] == name:
             return inventory[item_id]
@@ -68,7 +68,23 @@ def update_item(item_id: int, item: UpdateItem):
     if item_id not in inventory:
         return {"Error": "Item not found"}
 
-    updated_data = item.model_dump(exclude_unset=True)
+    if item.name is not None:
+        inventory[item_id]["name"] = item.name
 
-    inventory[item_id].update(updated_data)
+    if item.price is not None:
+        inventory[item_id]["price"] = item.price
+
+    if item.brand is not None:
+        inventory[item_id]["brand"] = item.brand
+
     return inventory[item_id]
+
+#   DELETE METHOD
+@app.delete("/delete-item")
+def delete_item(item_id: int = Query(..., description="The ID of the Item you want to delete.")):
+
+    if item_id not in inventory:
+        return {"Error": "Item not found"}
+
+    del inventory[item_id]
+    return {"Success": f"Item {item_id} deleted"}
