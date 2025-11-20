@@ -9,6 +9,11 @@ class Item(BaseModel):
     price: float
     brand: Optional[str] = None
 
+class UpdateItem(BaseModel):
+    name: Optional[str] = None
+    price: Optional[float] = None
+    brand: Optional[str] = None
+
 inventory = {}
 
 # GET Method
@@ -55,4 +60,15 @@ def create_item(item_id: int, item: Item):
         return {"Error": "Item already exists"}
 
     inventory[item_id] = item.model_dump()
+    return inventory[item_id]
+
+#   UPDATE METHOD
+@app.put("/update-item/{item_id}")
+def update_item(item_id: int, item: UpdateItem):
+    if item_id not in inventory:
+        return {"Error": "Item not found"}
+
+    updated_data = item.model_dump(exclude_unset=True)
+
+    inventory[item_id].update(updated_data)
     return inventory[item_id]
